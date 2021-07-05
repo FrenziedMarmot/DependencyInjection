@@ -62,3 +62,16 @@ jobs:
         .\.sonar\scanner\dotnet-sonarscanner begin /k:"FrenziedMarmot_DependencyInjection" /o:"frenziedmarmot" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
         dotnet test --verbosity normal
         .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+    - name: Build
+      run: dotnet build -c release
+    - name: Upload the Build Artifact
+      uses: actions/upload-artifact@v2.2.3
+      with:
+        # Artifact name
+        name: artifact
+        # A file, directory or wildcard pattern that describes what to upload
+        path: src\FrenziedMarmot.DependencyInjection\bin\Release\*.nupkg
+        # The desired behavior if no files are found using the provided path.
+        if-no-files-found: error
+        # Duration after which artifact will expire in days. 0 means using default retention.
+        retention-days: 7
