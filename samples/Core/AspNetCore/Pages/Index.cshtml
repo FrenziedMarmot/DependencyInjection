@@ -1,0 +1,12 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <div>Interface says: @Model.InterfaceSvc.Greet()</div>
+    <div>Impl says: @Model.ImplSvc.Greet()</div>
+    <div>Factory-created says: @Model.FactoryInjectedSvc.Greet()</div>
+</div>

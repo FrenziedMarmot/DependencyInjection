@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp3.1;net461;net47;net5.0</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
+    <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.5" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.5" />
+    <PackageReference Include="coverlet.collector" Version="3.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0.0" PublicKeyToken="adb9793829ddae60" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TestAssemblies\FrenziedMarmot.DependencyInjection.Test.AssemblyA\FrenziedMarmot.DependencyInjection.Test.AssemblyA.csproj" />
+    <ProjectReference Include="..\TestAssemblies\FrenziedMarmot.DependencyInjection.Test.AssemblyB\FrenziedMarmot.DependencyInjection.Test.AssemblyB.csproj" />
+    <ProjectReference Include="..\TestAssemblies\FrenziedMarmot.DependencyInjection.Test.AssemblyC\FrenziedMarmot.DependencyInjection.Test.AssemblyC.csproj" />
+    <ProjectReference Include="..\..\src\FrenziedMarmot.DependencyInjection\FrenziedMarmot.DependencyInjection.csproj" />
+  </ItemGroup>
+
+</Project>
