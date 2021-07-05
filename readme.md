@@ -5,7 +5,7 @@ The library, `FrenziedMarmot.DependencyInjection` provides the ability to map de
 [![GitHub license](https://img.shields.io/github/license/FrenziedMarmot/DependencyInjection)](https://github.com/FrenziedMarmot/DependencyInjection/blob/main/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/FrenziedMarmot/DependencyInjection)](https://github.com/FrenziedMarmot/DependencyInjection/issues)
 [![GitHub stars](https://img.shields.io/github/stars/FrenziedMarmot/DependencyInjection)](https://github.com/FrenziedMarmot/DependencyInjection/stargazers)
-
+[![.NET](https://github.com/FrenziedMarmot/DependencyInjection/actions/workflows/dotnet.yml/badge.svg)](https://github.com/FrenziedMarmot/DependencyInjection/actions/workflows/dotnet.yml)
 ## Installation
 
 Install via nuget package manager or use dotnet.
