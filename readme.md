@@ -16,6 +16,9 @@ Sonar:
 Nuget: 
 [![NuGet Status](https://img.shields.io/nuget/v/frenziedmarmot.dependencyinjection.svg?style=flat)](https://www.nuget.org/packages/FrenziedMarmot.DependencyInjection/)
 
+## Purpose
+
+By default, using dependency injection in C# requires that every time you have a new class to inject, you end up having to create it AND register it in the dependency injection system - usually in `Startup.cs`. Using this library, you modify your `Startup` once and then each time you create a class you decorate it with the `[Injectable]` attribute. This way, you define how something is injected with the class you're injecting. As long as the assembly that class is contained in is scanned, then it gets picked up and adding a class is one less step.
 
 ## Installation
 
