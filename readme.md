@@ -2,13 +2,20 @@
 
 The library, `FrenziedMarmot.DependencyInjection` provides the ability to map dependency injection via attributes.
 
+Github: 
 [![GitHub license](https://img.shields.io/github/license/FrenziedMarmot/DependencyInjection)](https://github.com/FrenziedMarmot/DependencyInjection/blob/main/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/FrenziedMarmot/DependencyInjection)](https://github.com/FrenziedMarmot/DependencyInjection/issues)
 [![GitHub stars](https://img.shields.io/github/stars/FrenziedMarmot/DependencyInjection)](https://github.com/FrenziedMarmot/DependencyInjection/stargazers)
 [![.NET](https://github.com/FrenziedMarmot/DependencyInjection/actions/workflows/dotnet.yml/badge.svg)](https://github.com/FrenziedMarmot/DependencyInjection/actions/workflows/dotnet.yml)
+
+Sonar: 
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=FrenziedMarmot_DependencyInjection&metric=coverage)](https://sonarcloud.io/dashboard?id=FrenziedMarmot_DependencyInjection)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=FrenziedMarmot_DependencyInjection&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=FrenziedMarmot_DependencyInjection)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=FrenziedMarmot_DependencyInjection&metric=alert_status)](https://sonarcloud.io/dashboard?id=FrenziedMarmot_DependencyInjection)
+
+Nuget: 
+[![NuGet Status](https://img.shields.io/nuget/v/frenziedmarmot.dependencyinjection.svg?style=flat)](https://www.nuget.org/packages/FrenziedMarmot.DependencyInjection/)
+
 
 ## Installation
 
