@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FrenziedMarmot.DependencyInjection.Samples.AspNetCore
 {
@@ -18,9 +17,7 @@ namespace FrenziedMarmot.DependencyInjection.Samples.AspNetCore
     }
 
     [Injectable(typeof(IGreetingService))]
-    public class InjectedAsInterface : InjectedAsSelf
-    {
-    }
+    public class InjectedAsInterface : InjectedAsSelf { }
 
     public class FactoryInjected : IGreetingService
     {

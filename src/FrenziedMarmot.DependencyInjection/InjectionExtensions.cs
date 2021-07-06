@@ -40,22 +40,25 @@ namespace FrenziedMarmot.DependencyInjection
         private static IServiceCollection InjectTypes(IServiceCollection services, IEnumerable<Type> types)
         {
             foreach (Type type in types)
-            foreach (InjectableAttribute attr in type.GetCustomAttributes<InjectableAttribute>())
             {
-                Type target = attr.TargetType ?? type;
-                if (attr.Factory != null)
+                foreach (InjectableAttribute attr in type.GetCustomAttributes<InjectableAttribute>())
                 {
-                    if (!typeof(IInjectableFactory).IsAssignableFrom(attr.Factory))
-                        throw new ArgumentException(
-                            @"Injectable factory for `{target.Name}` as specified must implement IInjectableFactory",
-                            nameof(InjectableAttribute.Factory));
+                    Type target = attr.TargetType ?? type;
+                    if (attr.Factory != null)
+                    {
+                        if (!typeof(IInjectableFactory).IsAssignableFrom(attr.Factory))
+                        {
+                            throw new ArgumentException(
+                                @"Injectable factory for `{target.Name}` as specified must implement IInjectableFactory");
+                        }
 
-                    IInjectableFactory factory = (IInjectableFactory) Activator.CreateInstance(attr.Factory);
-                    services.Add(new ServiceDescriptor(target, factory.Create, attr.Lifetime));
-                }
-                else
-                {
-                    services.Add(new ServiceDescriptor(target, attr.Implementation ?? type, attr.Lifetime));
+                        IInjectableFactory factory = (IInjectableFactory) Activator.CreateInstance(attr.Factory);
+                        services.Add(new ServiceDescriptor(target, factory.Create, attr.Lifetime));
+                    }
+                    else
+                    {
+                        services.Add(new ServiceDescriptor(target, attr.Implementation ?? type, attr.Lifetime));
+                    }
                 }
             }
 

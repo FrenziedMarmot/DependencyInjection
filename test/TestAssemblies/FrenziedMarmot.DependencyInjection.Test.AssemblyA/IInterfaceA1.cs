@@ -1,6 +1,4 @@
 ﻿namespace FrenziedMarmot.DependencyInjection.Test.AssemblyA
 {
-    public interface IInterfaceA1
-    {
-    }
+    public interface IInterfaceA1 { }
 }

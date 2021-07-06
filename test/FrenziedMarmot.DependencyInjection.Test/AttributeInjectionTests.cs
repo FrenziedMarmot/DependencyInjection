@@ -25,7 +25,7 @@ namespace FrenziedMarmot.DependencyInjection.Test
             {
                 {ServiceLifetime.Singleton, new List<InjectionRecord>()},
                 {ServiceLifetime.Scoped, new List<InjectionRecord>()},
-                {ServiceLifetime.Transient, new List<InjectionRecord>()}
+                {ServiceLifetime.Transient, new List<InjectionRecord>()},
             };
             Services = new Mock<IServiceCollection>();
             Services.Setup(e => e.Add(It.IsAny<ServiceDescriptor>()))

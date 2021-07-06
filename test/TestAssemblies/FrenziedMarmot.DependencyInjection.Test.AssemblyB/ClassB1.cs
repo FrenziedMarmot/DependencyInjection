@@ -2,7 +2,5 @@
 {
     [Injectable]
     [Injectable(typeof(IInterfaceB1))]
-    public class ClassB1 : IInterfaceB1
-    {
-    }
+    public class ClassB1 : IInterfaceB1 { }
 }
