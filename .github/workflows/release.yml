@@ -18,7 +18,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           # Required, workflow file name or ID
-          workflow: main.yml
+          workflow: dotnet.yml
           branch: main
           name: artifact
           path: build
