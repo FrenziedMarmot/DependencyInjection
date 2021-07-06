@@ -60,11 +60,12 @@ jobs:
       shell: powershell
       run: |
         .\.sonar\scanner\dotnet-sonarscanner begin /k:"FrenziedMarmot_DependencyInjection" /o:"frenziedmarmot" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-        dotnet test --verbosity normal
+        dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:Include="[FrenziedMarmot.DependencyInjection]*"
         .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
     - name: Build
       run: dotnet build -c release
     - name: Upload the Build Artifact
+      if: ${{ github.ref == 'refs/heads/main' }}
       uses: actions/upload-artifact@v2.2.3
       with:
         # Artifact name
