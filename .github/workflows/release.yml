@@ -29,3 +29,7 @@ jobs:
         dotnet-version: 5.0.x
     - name: Push with dotnet
       run: dotnet nuget push *.nupkg --api-key ${{ secrets.FM_NUGET }}
+    - name: Push
+      run: dotnet nuget push *.nupkg --source https://nuget.pkg.github.com/FrenziedMarmot/index.jsonn --api-key ${{ secrets.FM_GITHUB_PKG }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
