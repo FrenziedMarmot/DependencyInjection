@@ -11,11 +11,13 @@
 		<RepositoryUrl>https://github.com/FrenziedMarmot/DependencyInjection</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>Dependency Injection</PackageTags>
-		<PackageReleaseNotes>
-			Initial Release
-			- Map dependency injection via attributes
-			- Define factories
-		</PackageReleaseNotes>
+		<PackageReleaseNotes>v1.0.1
+- Add ability to map dependency injection for `IOptions&lt;T&gt;` via `[InjectableOptions]`
+- Added scanner for `[InjectableOptions]`
+
+v1.0.0 - Initial Release
+- Map dependency injection via attributes
+- Define factories</PackageReleaseNotes>
 		<Description>Allows for mapping classes for dependency injection by using, for example: `[Injectable(typeof(Target), typeof(Implementation), ServiceLifetime.Scoped]`. Aware of the class it's attached to for simplification and supports specifying a service factory.</Description>
 		<Version>1.0.1</Version>
 	</PropertyGroup>
