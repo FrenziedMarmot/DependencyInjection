@@ -55,7 +55,7 @@ namespace FrenziedMarmot.DependencyInjection.Test
             AssertOptions<TestOptions3>(provider, 3);
         }
 
-        private void AssertOptions<T>(IServiceProvider provider, int expectedNumber) where T : TestOptions
+        private static void AssertOptions<T>(IServiceProvider provider, int expectedNumber) where T : TestOptions
         {
             T opts = provider.GetService<IOptions<T>>()?.Value;
             Assert.IsNotNull(opts);
