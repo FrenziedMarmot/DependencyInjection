@@ -10,4 +10,4 @@ Currently fully supporting all 1.x branch.
 
 ## Reporting a Vulnerability
 
-Please email aaron.moore <AT> frenziedmarmot.com with vulns and we'll get back to you within 48 hours.
+Please email aaron.moore &lt;AT&gt; frenziedmarmot.com with vulns and we'll get back to you within 48 hours.

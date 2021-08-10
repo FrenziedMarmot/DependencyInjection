@@ -42,17 +42,40 @@ and either:
 - The implementation being injected
 - The type acting as a factory for the injection
 
-:warning: If you provide both the implementation and a factory, the **Factory** will take precedence. 
+:warning: If you provide both the implementation and a factory, the **Factory** will take precedence.
 
-### Step 2: Scanning for Injection Specified by Attributes
+In addition, you can also enable injection from your `appsettings.json` by specifying the class to hold the settings and instead using the `InjectableOptionsAttribute` and specifying:
 
-In Startup.cs when you're configuring dependency injection, utilize the extension method `ScanForAttributeInjection` supplying a list of assemblies for it to scan. The method utilizes the `params` keyword so multiple assemblies can be provided.
+ - The json path, using `:` to indicate nesting. If not specified, will use the class name.
+ - The type to deserialize to.  If not specified, uses the decorated class.
+
+### Step 2: Scanning for Injection Specified by Attributes  
+
+There are 2 extension methods which provide the functionality for this library:
+
+```cs
+    services.ScanForAttributeInjection(GetType().Assembly)
+            .ScanForOptionAttributeInjection(Configuration, GetType().Assembly);
+```
+
+In Startup.cs when you're configuring dependency injection, utilize the extension method `ScanForAttributeInjection` and supply a list of assemblies or types for it to scan. The method utilizes the `params` keyword so multiple types/assemblies can be provided.
 
 ```cs
     services.ScanForAttributeInjection(GetType().Assembly);
 ```
 
+For scanning for `IOptions<T>` to provide a type from appsettings, you need to additionally call `ScanForOptionAttributeInjection` and provide an `IConfiguration` object.
+
+```cs
+    services.ScanForOptionAttributeInjection(Configuration, GetType().Assembly);
+```
+
+:warning: These injection scanning options are independent. They do not rely on each other. You can use either or both. The important thing is to ensure that if you're using either of the attributes that you also scan for them or the attribute will be useless.
+
+---
 ## Example Attribute Usage
+
+The `[Injectable]` attribute is for injecting services and allows for a fairly flexible method of specifying your injections declaratively.
 
 Specifying a concrete implementation as an interface, the following is the equivalent of coding `services.AddScoped<IGreetingService, GreetingService>()`
 
@@ -118,6 +141,50 @@ The `Factory` property can be used to specify a factory class that will be calle
 ```
 
 Note: If you specify the same factory type twice, it will NOT inject the same instance to both. It will create 2 instances.
+
+---
+## Example Option Attribute Usage
+
+The `[InjectableOptions]` attribute is for `IOption<T>` objects useful for injecting from your `appsettings.json` file.
+
+For example, the class you would provide for 
+```cs
+    [InjectableOptions("My:Injected:Options")]
+    public class InjectedOptions
+    {
+        public string SomeValue { get; set; }
+        //...
+    }
+```
+
+Will deserialize:
+
+```json
+  "My": {
+    "Injected": {
+      "Options": {
+          "SomeValue": "The value"
+          //...
+      }
+    }
+  }
+```
+And you can inject it into your class:
+```cs
+        public IndexModel(IOptions<InjectedOptions> opts)
+        {
+            DoSomething(opts.Value.SomeValue);
+        }
+```
+
+You can optionally pass a second argument if the decorated type isn't the one you intend to inject. This is useful if, for example, the type you're intending to inject is in a different assembly:
+
+```cs
+
+    [InjectableOptions(Implementation = typeof(SomeApiOptions))]
+    [InjectableOptions("OtherApi", typeof(SomeOtherApiOptions))]
+    public class Startup
+```
 
 ---
 If you want to fuel our continued work:

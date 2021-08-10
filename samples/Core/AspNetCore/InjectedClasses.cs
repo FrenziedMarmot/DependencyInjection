@@ -34,7 +34,7 @@ namespace FrenziedMarmot.DependencyInjection.Samples.AspNetCore
         }
     }
 
-    [Injectable(Factory = typeof(SampleInjectionFactory))]
+    [Injectable(typeof(FactoryInjected), Factory = typeof(SampleInjectionFactory))]
     public class SampleInjectionFactory : IInjectableFactory
     {
         public object Create(IServiceProvider serviceProvider)

@@ -17,11 +17,12 @@
 			- Define factories
 		</PackageReleaseNotes>
 		<Description>Allows for mapping classes for dependency injection by using, for example: `[Injectable(typeof(Target), typeof(Implementation), ServiceLifetime.Scoped]`. Aware of the class it's attached to for simplification and supports specifying a service factory.</Description>
+		<Version>1.0.1</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0.0"
-		                  PublicKeyToken="adb9793829ddae60" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0.0" PublicKeyToken="adb9793829ddae60" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
