@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp3.1;net461;net47;net5.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp3.1;net461;net47;net5.0;net6.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -13,6 +13,7 @@
     <None Remove="coverage.net461.opencover.xml" />
     <None Remove="coverage.net47.opencover.xml" />
     <None Remove="coverage.net5.0.opencover.xml" />
+	<None Remove="coverage.net6.0.opencover.xml" />
     <None Remove="coverage.netcoreapp2.1.opencover.xml" />
     <None Remove="coverage.netcoreapp3.1.opencover.xml" />
   </ItemGroup>

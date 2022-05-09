@@ -64,6 +64,12 @@ In Startup.cs when you're configuring dependency injection, utilize the extensio
     services.ScanForAttributeInjection(GetType().Assembly);
 ```
 
+Optionally, there's a method that will take an entire appdomain. However, note that it will require marking up the assemblies that you want it to actually scan with the `InjectableAssembly` attribute. A good location to put this is usually `AssemblyInfo.cs` which is common, however, anywhere in the assembly code will work.
+
+```cs
+    services.ScanForAttributeInjection(AppDomain.CurrentDomain);
+```
+
 For scanning for `IOptions<T>` to provide a type from appsettings, you need to additionally call `ScanForOptionAttributeInjection` and provide an `IConfiguration` object.
 
 ```cs
