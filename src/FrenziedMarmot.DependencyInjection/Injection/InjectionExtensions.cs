@@ -37,19 +37,19 @@ public static class InjectionExtensions
     }
 
     /// <summary>
-    ///     Scans for dependency injection via attributes from the supplied assemblies.
+    ///     Scans for dependency injection via attributes from the supplied scanner's assemblies.
     /// </summary>
     /// <param name="services">The service collection to specify injections within.</param>
-    /// <param name="domain">The selected app domain</param>
+    /// <param name="provider">The selected assembly scanner</param>
     /// <param name="filterToInjectable">
     ///     Filters the assemblies in the app domain to only those marked with
     ///     <see cref="InjectableAssemblyAttribute" />
     /// </param>
     /// <returns></returns>
-    public static IServiceCollection ScanForAttributeInjection(this IServiceCollection services, AppDomain domain,
+    public static IServiceCollection ScanForAttributeInjection(this IServiceCollection services, IAssemblyProvider provider,
         bool filterToInjectable = true)
     {
-        return services.ScanForAttributeInjection(domain.GetAssemblies()
+        return services.ScanForAttributeInjection(provider.GetAssemblies()
             .Where(e => !filterToInjectable || e.GetCustomAttribute<InjectableAssemblyAttribute>() != null).ToArray());
     }
 
@@ -81,6 +81,25 @@ public static class InjectionExtensions
         params Assembly[] typeAssemblies)
     {
         return InjectOptionTypes(services, config, typeAssemblies.SelectMany(e => e.GetTypes()).Distinct());
+    }
+
+    /// <summary>
+    ///     Scans for dependency injection via attributes from the supplied assemblies.
+    /// </summary>
+    /// <param name="services">The service collection to specify injections within.</param>
+    /// <param name="config">The IConfiguration instance to pull settings from.</param>
+    /// <param name="provider">The assembly scanner for providing the assemblies.</param>
+    /// <param name="filterToInjectable">
+    ///     Filters the assemblies in the app domain to only those marked with
+    ///     <see cref="InjectableAssemblyAttribute" />
+    /// </param>
+    /// <returns></returns>
+    public static IServiceCollection ScanForOptionAttributeInjection(this IServiceCollection services, IConfiguration config,
+        IAssemblyProvider provider, bool filterToInjectable = true)
+    {
+        return services.ScanForOptionAttributeInjection(config,
+            provider.GetAssemblies().Where(e => !filterToInjectable || e.GetCustomAttribute<InjectableAssemblyAttribute>() != null)
+                .ToArray());
     }
 
     /// <summary>

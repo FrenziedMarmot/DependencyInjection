@@ -54,12 +54,40 @@ namespace FrenziedMarmot.DependencyInjection.Test
         }
 
         [TestMethod]
-        public void AssemblyA_TestAppDomain()
+        public void AppScanner_AppDomain()
         {
             Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyA");
             Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyB");
 
-            Services.Object.ScanForAttributeInjection(AppDomain.CurrentDomain);
+            Services.Object.ScanForAttributeInjection(new AppDomainAssemblyProvider(AppDomain.CurrentDomain));
+            AssertAssemblyAInjections();
+        }
+
+        [TestMethod]
+        public void AppScanner_NoFilter()
+        {
+            Mock<IAssemblyProvider> scanner = new Mock<IAssemblyProvider>();
+            scanner.Setup(e => e.GetAssemblies()).Returns(new[]
+            {
+                Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyA"),
+                Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyB"),
+            });
+
+            Services.Object.ScanForAttributeInjection(scanner.Object, false);
+            AssertMultiAssemblyInjections();
+        }
+
+        [TestMethod]
+        public void AppScanner_Filter()
+        {
+            Mock<IAssemblyProvider> scanner = new Mock<IAssemblyProvider>();
+            scanner.Setup(e => e.GetAssemblies()).Returns(new[]
+            {
+                Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyA"),
+                Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyB"),
+            });
+
+            Services.Object.ScanForAttributeInjection(scanner.Object, true);
             AssertAssemblyAInjections();
         }
 
@@ -109,14 +137,14 @@ namespace FrenziedMarmot.DependencyInjection.Test
         }
 
         [TestMethod]
-        public void InvalidFactory()
+        public void Factory_Invalid()
         {
             Assert.ThrowsException<ArgumentException>(
                 () => Services.Object.ScanForAttributeInjection(Assembly.GetAssembly(typeof(ClassC1))));
         }
 
         [TestMethod]
-        public void TypedFactory()
+        public void Factory_Typed()
         {
             InjectionTestAssembly testAssembly = new InjectionTestAssembly(new[] { typeof(ITypedFactoryTarget) });
             Services.Object.ScanForAttributeInjection(testAssembly);
@@ -132,7 +160,7 @@ namespace FrenziedMarmot.DependencyInjection.Test
         }
 
         [TestMethod]
-        public void InvalidTypedFactory()
+        public void Factory_Typed_Invalid()
         {
             InjectionTestAssembly testAssembly = new InjectionTestAssembly(new[] { typeof(IInvalidTypedFactoryTarget) });
             Assert.ThrowsException<ArgumentException>(
