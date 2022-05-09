@@ -146,6 +146,27 @@ The `Factory` property can be used to specify a factory class that will be calle
     }
 ```
 
+Type-safety through the factory is also provided in `1.0.2` via `IInjectableFactory<T>`. This also implements `IInjectableFactory` so to reduce boilerplace `AbstractInjectableFactor<TTarget>` and `AbstractInjectableFactory<TTarget, TImpl>` are also provided and encouraged.
+
+
+```cs
+    public class MyClassFactory : AbstractInjectableFactory<MyClass>
+    {
+        public MyClass Create(IServiceProvider serviceProvider)
+        {
+            return new MyClass("I was injected via Factory!");
+        }
+    }
+
+    public class AnotherFactory : AbstractInjectableFactory<IAnother, AnotherClass>
+    {
+        public AnotherClass Create(IServiceProvider serviceProvider)
+        {
+            return new AnotherClass("I was injected via Factory!");
+        }
+    }
+```
+
 Note: If you specify the same factory type twice, it will NOT inject the same instance to both. It will create 2 instances.
 
 ---
