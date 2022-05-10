@@ -64,7 +64,13 @@ In Startup.cs when you're configuring dependency injection, utilize the extensio
     services.ScanForAttributeInjection(GetType().Assembly);
 ```
 
-For scanning for `IOptions<T>` to provide a type from appsettings, you need to additionally call `ScanForOptionAttributeInjection` and provide an `IConfiguration` object.
+Optionally, there's a method that will take an `IAssemblyScanner` and a class is provided that will scan an entire appdomain. However, note that it will require marking up the assemblies that you want it to actually scan with the `InjectableAssembly` attribute. A good location to put this is usually `AssemblyInfo.cs` which is common, however, anywhere in the code for that assembly will work. This flag can optionally be turned off.
+
+```cs
+    services.ScanForAttributeInjection(new AppDomainAssemblyScanner(AppDomain.CurrentDomain));
+```
+
+For scanning for `IOptions<T>` to provide a type from appsettings, you need to additionally call `ScanForOptionAttributeInjection` and provide an `IConfiguration` object. The same overload exists for an `IAssemblyScanner`.
 
 ```cs
     services.ScanForOptionAttributeInjection(Configuration, GetType().Assembly);
@@ -136,6 +142,27 @@ The `Factory` property can be used to specify a factory class that will be calle
         public object Create(IServiceProvider serviceProvider)
         {
             return new MyClass("I was injected via Factory!");
+        }
+    }
+```
+
+Type-safety through the factory is also provided in `1.0.2` via `IInjectableFactory<T>`. This also implements `IInjectableFactory` so to reduce boilerplace `AbstractInjectableFactor<TTarget>` and `AbstractInjectableFactory<TTarget, TImpl>` are also provided and encouraged.
+
+
+```cs
+    public class MyClassFactory : AbstractInjectableFactory<MyClass>
+    {
+        public MyClass Create(IServiceProvider serviceProvider)
+        {
+            return new MyClass("I was injected via Factory!");
+        }
+    }
+
+    public class AnotherFactory : AbstractInjectableFactory<IAnother, AnotherClass>
+    {
+        public AnotherClass Create(IServiceProvider serviceProvider)
+        {
+            return new AnotherClass("I was injected via Factory!");
         }
     }
 ```

@@ -1,4 +1,8 @@
-﻿namespace FrenziedMarmot.DependencyInjection.Test.AssemblyA
+﻿using FrenziedMarmot.DependencyInjection;
+
+[assembly: InjectableAssembly]
+
+namespace FrenziedMarmot.DependencyInjection.Test.AssemblyA
 {
     [Injectable]
     [Injectable(typeof(IInterfaceA1))]

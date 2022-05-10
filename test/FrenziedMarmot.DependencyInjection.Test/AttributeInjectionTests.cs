@@ -5,9 +5,11 @@ using System.Reflection;
 using FrenziedMarmot.DependencyInjection.Test.AssemblyA;
 using FrenziedMarmot.DependencyInjection.Test.AssemblyB;
 using FrenziedMarmot.DependencyInjection.Test.AssemblyC;
+using FrenziedMarmot.DependencyInjection.Test.TestTypes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using AppDomain = System.AppDomain;
 
 namespace FrenziedMarmot.DependencyInjection.Test
 {
@@ -23,9 +25,9 @@ namespace FrenziedMarmot.DependencyInjection.Test
         {
             Injections = new Dictionary<ServiceLifetime, List<InjectionRecord>>
             {
-                {ServiceLifetime.Singleton, new List<InjectionRecord>()},
-                {ServiceLifetime.Scoped, new List<InjectionRecord>()},
-                {ServiceLifetime.Transient, new List<InjectionRecord>()},
+                { ServiceLifetime.Singleton, new List<InjectionRecord>() },
+                { ServiceLifetime.Scoped, new List<InjectionRecord>() },
+                { ServiceLifetime.Transient, new List<InjectionRecord>() },
             };
             Services = new Mock<IServiceCollection>();
             Services.Setup(e => e.Add(It.IsAny<ServiceDescriptor>()))
@@ -48,6 +50,44 @@ namespace FrenziedMarmot.DependencyInjection.Test
         public void AssemblyA_TestRepresentativeType_Multiple()
         {
             Services.Object.ScanForAttributeInjection(typeof(ClassA1), typeof(ClassA2));
+            AssertAssemblyAInjections();
+        }
+
+        [TestMethod]
+        public void AppScanner_AppDomain()
+        {
+            Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyA");
+            Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyB");
+
+            Services.Object.ScanForAttributeInjection(new AppDomainAssemblyProvider(AppDomain.CurrentDomain));
+            AssertAssemblyAInjections();
+        }
+
+        [TestMethod]
+        public void AppScanner_NoFilter()
+        {
+            Mock<IAssemblyProvider> scanner = new Mock<IAssemblyProvider>();
+            scanner.Setup(e => e.GetAssemblies()).Returns(new[]
+            {
+                Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyA"),
+                Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyB"),
+            });
+
+            Services.Object.ScanForAttributeInjection(scanner.Object, false);
+            AssertMultiAssemblyInjections();
+        }
+
+        [TestMethod]
+        public void AppScanner_Filter()
+        {
+            Mock<IAssemblyProvider> scanner = new Mock<IAssemblyProvider>();
+            scanner.Setup(e => e.GetAssemblies()).Returns(new[]
+            {
+                Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyA"),
+                Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyB"),
+            });
+
+            Services.Object.ScanForAttributeInjection(scanner.Object, true);
             AssertAssemblyAInjections();
         }
 
@@ -97,10 +137,34 @@ namespace FrenziedMarmot.DependencyInjection.Test
         }
 
         [TestMethod]
-        public void InvalidFactory()
+        public void Factory_Invalid()
         {
             Assert.ThrowsException<ArgumentException>(
                 () => Services.Object.ScanForAttributeInjection(Assembly.GetAssembly(typeof(ClassC1))));
+        }
+
+        [TestMethod]
+        public void Factory_Typed()
+        {
+            InjectionTestAssembly testAssembly = new InjectionTestAssembly(new[] { typeof(ITypedFactoryTarget) });
+            Services.Object.ScanForAttributeInjection(testAssembly);
+            Assert.AreEqual(1, Injections[ServiceLifetime.Scoped].Count);
+
+            InjectionRecord record = Injections[ServiceLifetime.Scoped].First();
+            Assert.IsNotNull(record);
+            Assert.AreEqual(typeof(ITypedFactoryTarget), record.Target);
+            var factory = record.Factory(null);
+            Assert.IsNotNull(factory);
+            Assert.IsInstanceOfType(factory, typeof(ITypedFactoryTarget));
+            Assert.IsInstanceOfType(factory, typeof(TypedImplClass));
+        }
+
+        [TestMethod]
+        public void Factory_Typed_Invalid()
+        {
+            InjectionTestAssembly testAssembly = new InjectionTestAssembly(new[] { typeof(IInvalidTypedFactoryTarget) });
+            Assert.ThrowsException<ArgumentException>(
+                () => Services.Object.ScanForAttributeInjection(testAssembly));
         }
 
         protected int CountInjections(ServiceLifetime lifetime, Type target, Type impl)
@@ -134,7 +198,7 @@ namespace FrenziedMarmot.DependencyInjection.Test
             Assert.AreEqual(1, CountInjections(ServiceLifetime.Transient, typeof(IInterfaceA2), typeof(ClassA2)));
             Assert.AreEqual(1, CountInjections(ServiceLifetime.Transient, typeof(IInterfaceB2), typeof(ClassB2)));
 
-            Assert.AreEqual(5, Injections[ServiceLifetime.Scoped].Count);
+            Assert.AreEqual(6, Injections[ServiceLifetime.Scoped].Count);
             Assert.AreEqual(1, CountInjections(ServiceLifetime.Scoped, typeof(IInterfaceA1), typeof(ClassA1)));
             Assert.AreEqual(1, CountInjections(ServiceLifetime.Scoped, typeof(ClassA1), typeof(ClassA1)));
             Assert.AreEqual(1, CountInjections(ServiceLifetime.Scoped, typeof(IInterfaceB1), typeof(ClassB1)));
@@ -142,12 +206,37 @@ namespace FrenziedMarmot.DependencyInjection.Test
             Assert.AreEqual(1, CountInjections(ServiceLifetime.Scoped, typeof(ClassB3), null));
 
             var factoryCreated = Injections[ServiceLifetime.Scoped].Where(e => e.Factory != null).ToList();
-            Assert.AreEqual(1, factoryCreated.Count);
-            InjectionRecord expectedFactory = factoryCreated.Single();
-            Assert.AreEqual(typeof(ClassB3), expectedFactory.Target);
-            var factoryResult = expectedFactory.Factory(null);
-            Assert.IsNotNull(factoryResult);
-            Assert.IsInstanceOfType(factoryResult, typeof(ClassB3));
+            Assert.AreEqual(2, factoryCreated.Count);
+
+            InjectionRecord b3Factory = factoryCreated.FirstOrDefault(e => e.Target.IsAssignableFrom(typeof(ClassB3)));
+            Assert.IsNotNull(b3Factory);
+            Assert.AreEqual(typeof(ClassB3), b3Factory.Target);
+            var b3FactoryResult = b3Factory.Factory(null);
+            Assert.IsNotNull(b3FactoryResult);
+            Assert.IsInstanceOfType(b3FactoryResult, typeof(ClassB3));
+
+
+            InjectionRecord b4Factory = factoryCreated.FirstOrDefault(e => e.Target.IsAssignableFrom(typeof(InterfaceB4)));
+            Assert.IsNotNull(b4Factory);
+            Assert.AreEqual(typeof(InterfaceB4), b4Factory.Target);
+            var b4FactoryFactory = b4Factory.Factory(null);
+            Assert.IsNotNull(b4FactoryFactory);
+            Assert.IsInstanceOfType(b4FactoryFactory, typeof(ClassB4));
+        }
+
+        private class InjectionTestAssembly : Assembly
+        {
+            public InjectionTestAssembly(Type[] testTypes)
+            {
+                TestTestTypes = testTypes;
+            }
+
+            private Type[] TestTestTypes { get; }
+
+            public override Type[] GetTypes()
+            {
+                return TestTestTypes;
+            }
         }
     }
 }

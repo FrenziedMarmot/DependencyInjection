@@ -11,15 +11,24 @@
 		<RepositoryUrl>https://github.com/FrenziedMarmot/DependencyInjection</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>Dependency Injection</PackageTags>
-		<PackageReleaseNotes>v1.0.1
-- Add ability to map dependency injection for `IOptions&lt;T&gt;` via `[InjectableOptions]`
-- Added scanner for `[InjectableOptions]`
+		<PackageReleaseNotes>
+			v1.0.2
+			- Add `SortOrder` to `InjectableAttribute`
+			- Added generic typing to `IInjectableFactory` with error checking
+			- Added attribute `InjectableAssemblyAttribute` to facilitate assembly filtering. For example, add `[assembly: InjectableAssembly]` to `AssemblyInfo.cs` (or anywhere really) and filter your assemblies by it.
+			- Added overload to scan an entire AppDomain. ~!NOTE!~: Filters by `InjectableAssemblyAttribute` by default with an optional switch to turn off auto-filtering.
 
-v1.0.0 - Initial Release
-- Map dependency injection via attributes
-- Define factories</PackageReleaseNotes>
+			v1.0.1
+			- Add ability to map dependency injection for `IOptions&lt;T&gt;` via `[InjectableOptions]`
+			- Added scanner for `[InjectableOptions]`
+
+			v1.0.0 - Initial Release
+			- Map dependency injection via attributes
+			- Define factories
+		</PackageReleaseNotes>
 		<Description>Allows for mapping classes for dependency injection by using, for example: `[Injectable(typeof(Target), typeof(Implementation), ServiceLifetime.Scoped]`. Aware of the class it's attached to for simplification and supports specifying a service factory.</Description>
 		<Version>1.0.1</Version>
+		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
