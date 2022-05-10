@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
 
 namespace FrenziedMarmot.DependencyInjection;
@@ -20,6 +21,7 @@ public static class InjectionExtensions
     /// <param name="services">The service collection to specify injections within.</param>
     /// <param name="representativeTypes">The types representing assemblies to scan.</param>
     /// <returns></returns>
+    [UsedImplicitly]
     public static IServiceCollection ScanForAttributeInjection(this IServiceCollection services, params Type[] representativeTypes)
     {
         return services.ScanForAttributeInjection(representativeTypes.Select(e => e.Assembly).Distinct().ToArray());
@@ -31,6 +33,7 @@ public static class InjectionExtensions
     /// <param name="services">The service collection to specify injections within.</param>
     /// <param name="typeAssemblies">The assemblies to scan.</param>
     /// <returns></returns>
+    [UsedImplicitly]
     public static IServiceCollection ScanForAttributeInjection(this IServiceCollection services, params Assembly[] typeAssemblies)
     {
         return InjectTypes(services, typeAssemblies.SelectMany(e => e.GetTypes()).Distinct());
@@ -46,6 +49,7 @@ public static class InjectionExtensions
     ///     <see cref="InjectableAssemblyAttribute" />
     /// </param>
     /// <returns></returns>
+    [UsedImplicitly]
     public static IServiceCollection ScanForAttributeInjection(this IServiceCollection services, IAssemblyProvider provider,
         bool filterToInjectable = true)
     {
@@ -64,6 +68,7 @@ public static class InjectionExtensions
     /// <param name="config">The IConfiguration instance to pull settings from.</param>
     /// <param name="representativeTypes">The types representing assemblies to scan.</param>
     /// <returns></returns>
+    [UsedImplicitly]
     public static IServiceCollection ScanForOptionAttributeInjection(this IServiceCollection services, IConfiguration config,
         params Type[] representativeTypes)
     {
@@ -77,6 +82,7 @@ public static class InjectionExtensions
     /// <param name="config">The IConfiguration instance to pull settings from.</param>
     /// <param name="typeAssemblies">The assemblies to scan.</param>
     /// <returns></returns>
+    [UsedImplicitly]
     public static IServiceCollection ScanForOptionAttributeInjection(this IServiceCollection services, IConfiguration config,
         params Assembly[] typeAssemblies)
     {
@@ -94,6 +100,7 @@ public static class InjectionExtensions
     ///     <see cref="InjectableAssemblyAttribute" />
     /// </param>
     /// <returns></returns>
+    [UsedImplicitly]
     public static IServiceCollection ScanForOptionAttributeInjection(this IServiceCollection services, IConfiguration config,
         IAssemblyProvider provider, bool filterToInjectable = true)
     {

@@ -15,7 +15,8 @@
 - Add `SortOrder` to `InjectableAttribute`
 - Added generic typing to `IInjectableFactory` with error checking
 - Added attribute `InjectableAssemblyAttribute` to facilitate assembly filtering. For example, add `[assembly: InjectableAssembly]` to `AssemblyInfo.cs` (or anywhere really) and filter your assemblies by it.
-- Added overload to scan an entire AppDomain. ~!NOTE!~: Filters by `InjectableAssemblyAttribute` by default with an optional switch to turn off auto-filtering.
+- Added `IAssemblyProvider` to facilitate the encapsulation of scanning logic. NOTE: Filters by `InjectableAssemblyAttribute` by default with an optional switch to turn off auto-filtering.
+- Provided `AppDomainAssemblyProvider to scan an entire AppDomain.
 
 v1.0.1
 - Add ability to map dependency injection for `IOptions&lt;T&gt;` via `[InjectableOptions]`
@@ -31,6 +32,7 @@ v1.0.0 - Initial Release
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" PublicKeyToken="adb9793829ddae60" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
 	</ItemGroup>
