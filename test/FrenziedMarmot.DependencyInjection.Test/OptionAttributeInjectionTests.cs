@@ -49,7 +49,7 @@ namespace FrenziedMarmot.DependencyInjection.Test
         [TestMethod]
         public void TestRepresentativeType()
         {
-            Services.ScanForOptionAttributeInjection(Config, AssemblyC);
+            Services.ScanForOptionAttributeInjection(Config, AssemblyC.GetRepresentativeType());
             ServiceProvider provider = Services.BuildServiceProvider();
             AssertOptions<TestOptions1>(provider, 1);
             AssertOptions<TestOptions2>(provider, 2);
