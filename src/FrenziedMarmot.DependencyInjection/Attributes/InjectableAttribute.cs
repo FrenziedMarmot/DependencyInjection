@@ -46,7 +46,7 @@ public class InjectableAttribute : Attribute
     /// <remarks>
     ///     The injection factory provided must implement <see cref="IInjectableFactory" />.
     ///     Optionally, <see cref="IInjectableFactory{TTarget}" /> can also be implemented to provide type-safety.
-    ///     <see cref="AbstractInjectableFactory{TTarget}" /> and <see cref="AbstractInjectableFactory{TTarget, TImpl}" /> are
+    ///     <see cref="InjectableFactory{TTarget}" /> and <see cref="InjectableFactory{TTarget, TImpl}" /> are
     ///     provided for convenience.
     /// </remarks>
     public Type Factory { get; set; }

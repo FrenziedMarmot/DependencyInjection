@@ -8,7 +8,7 @@ namespace FrenziedMarmot.DependencyInjection.Test.AssemblyB
         public int Test { get; set; }
     }
 
-    public class ClassB4Factory : AbstractInjectableFactory<InterfaceB4, ClassB4>
+    public class ClassB4Factory : InjectableFactory<InterfaceB4, ClassB4>
     {
         public override ClassB4 Create(IServiceProvider serviceProvider)
         {

@@ -50,7 +50,7 @@ public static class InjectionExtensions
     /// </param>
     /// <returns></returns>
     [UsedImplicitly]
-    public static IServiceCollection ScanForAttributeInjection(this IServiceCollection services, IAssemblyProvider provider,
+    public static IServiceCollection ScanForAttributeInjection(this IServiceCollection services, IInjectableAssemblyProvider provider,
         bool filterToInjectable = true)
     {
         return services.ScanForAttributeInjection(provider.GetAssemblies()
@@ -102,7 +102,7 @@ public static class InjectionExtensions
     /// <returns></returns>
     [UsedImplicitly]
     public static IServiceCollection ScanForOptionAttributeInjection(this IServiceCollection services, IConfiguration config,
-        IAssemblyProvider provider, bool filterToInjectable = true)
+        IInjectableAssemblyProvider provider, bool filterToInjectable = true)
     {
         return services.ScanForOptionAttributeInjection(config,
             provider.GetAssemblies().Where(e => !filterToInjectable || e.GetCustomAttribute<InjectableAssemblyAttribute>() != null)

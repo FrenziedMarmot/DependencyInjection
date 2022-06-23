@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.1;netstandard2.0;net461;net47</TargetFrameworks>
+		<TargetFrameworks>netstandard2.1;netstandard2.0;net6.0;</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Company>Frenzied Marmot, LLC</Company>
 		<Authors>Aaron Moore</Authors>
@@ -15,8 +15,7 @@
 - Add `SortOrder` to `InjectableAttribute`
 - Added generic typing to `IInjectableFactory` with error checking
 - Added attribute `InjectableAssemblyAttribute` to facilitate assembly filtering. For example, add `[assembly: InjectableAssembly]` to `AssemblyInfo.cs` (or anywhere really) and filter your assemblies by it.
-- Added `IAssemblyProvider` to facilitate the encapsulation of scanning logic. NOTE: Filters by `InjectableAssemblyAttribute` by default with an optional switch to turn off auto-filtering.
-- Provided `AppDomainAssemblyProvider to scan an entire AppDomain.
+- Added `IInjectableAssemblyProvider` to facilitate the encapsulation of scanning logic. NOTE: Filters by `InjectableAssemblyAttribute` by default with an optional switch to turn off auto-filtering.
 
 v1.0.1
 - Add ability to map dependency injection for `IOptions&lt;T&gt;` via `[InjectableOptions]`
@@ -27,7 +26,7 @@ v1.0.0 - Initial Release
 - Define factories
 		</PackageReleaseNotes>
 		<Description>Allows for mapping classes for dependency injection by using, for example: `[Injectable(typeof(Target), typeof(Implementation), ServiceLifetime.Scoped]`. Aware of the class it's attached to for simplification and supports specifying a service factory.</Description>
-		<Version>1.0.2-rc</Version>
+		<Version>1.0.2</Version>
 		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 

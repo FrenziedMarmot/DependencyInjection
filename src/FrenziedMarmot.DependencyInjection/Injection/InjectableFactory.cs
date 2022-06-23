@@ -8,7 +8,7 @@
 ///     Reduces the boilerplate between <see cref="IInjectableFactory" /> and
 ///     <see cref="IInjectableFactory{TTarget}" />.
 /// </remarks>
-public abstract class AbstractInjectableFactory<TTarget> : IInjectableFactory<TTarget>
+public abstract class InjectableFactory<TTarget> : IInjectableFactory<TTarget>
 {
     /// <inheritdoc />
     public abstract TTarget Create(IServiceProvider serviceProvider);
@@ -28,4 +28,4 @@ public abstract class AbstractInjectableFactory<TTarget> : IInjectableFactory<TT
 ///     Reduces the boilerplate between <see cref="IInjectableFactory" /> and
 ///     <see cref="IInjectableFactory{TTarget}" />.
 /// </remarks>
-public abstract class AbstractInjectableFactory<TTarget, TImpl> : AbstractInjectableFactory<TImpl> where TImpl : TTarget { }
+public abstract class InjectableFactory<TTarget, TImpl> : InjectableFactory<TImpl> where TImpl : TTarget { }

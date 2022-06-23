@@ -12,13 +12,14 @@ namespace FrenziedMarmot.DependencyInjection.Samples.AspNetCore
     {
         public string Greet()
         {
-            return $"{GetType().Name} was injected!";
+            return $"{{{GetType().Name}}} was injected!";
         }
     }
 
     [Injectable(typeof(IGreetingService))]
     public class InjectedAsInterface : InjectedAsSelf { }
 
+    [Injectable(Factory = typeof(SampleInjectionFactory))]
     public class FactoryInjected : IGreetingService
     {
         public FactoryInjected(string greeting)
@@ -34,8 +35,7 @@ namespace FrenziedMarmot.DependencyInjection.Samples.AspNetCore
         }
     }
 
-    [Injectable(typeof(FactoryInjected), Factory = typeof(SampleInjectionFactory))]
-    public class SampleInjectionFactory : AbstractInjectableFactory<FactoryInjected>
+    public class SampleInjectionFactory : InjectableFactory<FactoryInjected>
     {
         public override FactoryInjected Create(IServiceProvider serviceProvider)
         {

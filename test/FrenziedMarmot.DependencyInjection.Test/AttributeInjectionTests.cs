@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using FrenziedMarmot.DependencyInjection.Test.AssemblyA;
@@ -19,6 +20,9 @@ namespace FrenziedMarmot.DependencyInjection.Test
         private Mock<IServiceCollection> Services { get; set; }
 
         private Dictionary<ServiceLifetime, List<InjectionRecord>> Injections { get; set; }
+        private InjectionTestAssembly AssemblyA { get; set; }
+        private InjectionTestAssembly AssemblyB { get; set; }
+        private InjectionTestAssembly AssemblyC { get; set; }
 
         [TestInitialize]
         public void Setup()
@@ -37,40 +41,34 @@ namespace FrenziedMarmot.DependencyInjection.Test
                         descriptor.ImplementationFactory);
                     Injections[descriptor.Lifetime].Add(record);
                 });
+
+            AssemblyA = new InjectionTestAssembly(true, typeof(ClassA1), typeof(ClassA2), typeof(IInterfaceA1), typeof(IInterfaceA2));
+            AssemblyB = new InjectionTestAssembly(false, typeof(ClassB1), typeof(ClassB2), typeof(ClassB3), typeof(ClassB4), typeof(IInterfaceB1), typeof(IInterfaceB2));
+            AssemblyC = new InjectionTestAssembly(false, typeof(ClassC1));
         }
 
         [TestMethod]
         public void AssemblyA_TestRepresentativeType_Single()
         {
-            Services.Object.ScanForAttributeInjection(typeof(ClassA1));
+            Services.Object.ScanForAttributeInjection(AssemblyA.GetRepresentativeType());
             AssertAssemblyAInjections();
         }
 
         [TestMethod]
         public void AssemblyA_TestRepresentativeType_Multiple()
         {
-            Services.Object.ScanForAttributeInjection(typeof(ClassA1), typeof(ClassA2));
-            AssertAssemblyAInjections();
-        }
-
-        [TestMethod]
-        public void AppScanner_AppDomain()
-        {
-            Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyA");
-            Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyB");
-
-            Services.Object.ScanForAttributeInjection(new AppDomainAssemblyProvider(AppDomain.CurrentDomain));
+            Services.Object.ScanForAttributeInjection(AssemblyA.GetRepresentativeType(), AssemblyA.GetRepresentativeType());
             AssertAssemblyAInjections();
         }
 
         [TestMethod]
         public void AppScanner_NoFilter()
         {
-            Mock<IAssemblyProvider> scanner = new Mock<IAssemblyProvider>();
+            Mock<IInjectableAssemblyProvider> scanner = new Mock<IInjectableAssemblyProvider>();
             scanner.Setup(e => e.GetAssemblies()).Returns(new[]
             {
-                Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyA"),
-                Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyB"),
+                AssemblyA,
+                AssemblyB,
             });
 
             Services.Object.ScanForAttributeInjection(scanner.Object, false);
@@ -80,11 +78,11 @@ namespace FrenziedMarmot.DependencyInjection.Test
         [TestMethod]
         public void AppScanner_Filter()
         {
-            Mock<IAssemblyProvider> scanner = new Mock<IAssemblyProvider>();
+            Mock<IInjectableAssemblyProvider> scanner = new Mock<IInjectableAssemblyProvider>();
             scanner.Setup(e => e.GetAssemblies()).Returns(new[]
             {
-                Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyA"),
-                Assembly.Load("FrenziedMarmot.DependencyInjection.Test.AssemblyB"),
+                AssemblyA,
+                AssemblyB,
             });
 
             Services.Object.ScanForAttributeInjection(scanner.Object, true);
@@ -94,45 +92,42 @@ namespace FrenziedMarmot.DependencyInjection.Test
         [TestMethod]
         public void AssemblyA_TestAssemblies_Single()
         {
-            Services.Object.ScanForAttributeInjection(Assembly.LoadFrom("FrenziedMarmot.DependencyInjection.Test.AssemblyA.dll"));
+            Services.Object.ScanForAttributeInjection(AssemblyA);
             AssertAssemblyAInjections();
         }
 
         [TestMethod]
         public void AssemblyA_TestAssemblies_Multiple()
         {
-            Services.Object.ScanForAttributeInjection(Assembly.LoadFrom("FrenziedMarmot.DependencyInjection.Test.AssemblyA.dll"),
-                Assembly.GetAssembly(typeof(ClassA1)));
+            Services.Object.ScanForAttributeInjection(AssemblyA, AssemblyA);
             AssertAssemblyAInjections();
         }
 
         [TestMethod]
         public void Multiple_TestRepresentativeType_Distinct()
         {
-            Services.Object.ScanForAttributeInjection(typeof(ClassA1), typeof(ClassB2));
+            Services.Object.ScanForAttributeInjection(AssemblyA.GetRepresentativeType(), AssemblyB.GetRepresentativeType());
             AssertMultiAssemblyInjections();
         }
 
         [TestMethod]
         public void MultipleAssemblies_TestRepresentativeType_Dupes()
         {
-            Services.Object.ScanForAttributeInjection(typeof(ClassA1), typeof(ClassA2), typeof(ClassB1), typeof(ClassB2));
+            Services.Object.ScanForAttributeInjection(AssemblyA.GetRepresentativeType(), AssemblyB.GetRepresentativeType(), AssemblyA.GetRepresentativeType(), AssemblyB.GetRepresentativeType());
             AssertMultiAssemblyInjections();
         }
 
         [TestMethod]
         public void MultipleAssemblies_TestAssemblies_Distinct()
         {
-            Services.Object.ScanForAttributeInjection(Assembly.LoadFrom("FrenziedMarmot.DependencyInjection.Test.AssemblyA.dll"),
-                Assembly.GetAssembly(typeof(ClassB1)));
+            Services.Object.ScanForAttributeInjection(AssemblyA, AssemblyB);
             AssertMultiAssemblyInjections();
         }
 
         [TestMethod]
         public void MultipleAssemblies_TestAssemblies_Dupes()
         {
-            Services.Object.ScanForAttributeInjection(Assembly.LoadFrom("FrenziedMarmot.DependencyInjection.Test.AssemblyB.dll"),
-                Assembly.GetAssembly(typeof(ClassA1)), Assembly.GetAssembly(typeof(ClassB1)), Assembly.GetAssembly(typeof(ClassB2)));
+            Services.Object.ScanForAttributeInjection(AssemblyA, AssemblyA, AssemblyB, AssemblyB);
             AssertMultiAssemblyInjections();
         }
 
@@ -140,13 +135,13 @@ namespace FrenziedMarmot.DependencyInjection.Test
         public void Factory_Invalid()
         {
             Assert.ThrowsException<ArgumentException>(
-                () => Services.Object.ScanForAttributeInjection(Assembly.GetAssembly(typeof(ClassC1))));
+                () => Services.Object.ScanForAttributeInjection(AssemblyC));
         }
 
         [TestMethod]
         public void Factory_Typed()
         {
-            InjectionTestAssembly testAssembly = new InjectionTestAssembly(new[] { typeof(ITypedFactoryTarget) });
+            InjectionTestAssembly testAssembly = new InjectionTestAssembly(true, new[] { typeof(ITypedFactoryTarget) });
             Services.Object.ScanForAttributeInjection(testAssembly);
             Assert.AreEqual(1, Injections[ServiceLifetime.Scoped].Count);
 
@@ -162,7 +157,7 @@ namespace FrenziedMarmot.DependencyInjection.Test
         [TestMethod]
         public void Factory_Typed_Invalid()
         {
-            InjectionTestAssembly testAssembly = new InjectionTestAssembly(new[] { typeof(IInvalidTypedFactoryTarget) });
+            InjectionTestAssembly testAssembly = new InjectionTestAssembly(true, new[] { typeof(IInvalidTypedFactoryTarget) });
             Assert.ThrowsException<ArgumentException>(
                 () => Services.Object.ScanForAttributeInjection(testAssembly));
         }
@@ -222,21 +217,6 @@ namespace FrenziedMarmot.DependencyInjection.Test
             var b4FactoryFactory = b4Factory.Factory(null);
             Assert.IsNotNull(b4FactoryFactory);
             Assert.IsInstanceOfType(b4FactoryFactory, typeof(ClassB4));
-        }
-
-        private class InjectionTestAssembly : Assembly
-        {
-            public InjectionTestAssembly(Type[] testTypes)
-            {
-                TestTestTypes = testTypes;
-            }
-
-            private Type[] TestTestTypes { get; }
-
-            public override Type[] GetTypes()
-            {
-                return TestTestTypes;
-            }
         }
     }
 }

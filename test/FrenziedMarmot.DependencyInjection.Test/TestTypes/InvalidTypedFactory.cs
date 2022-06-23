@@ -10,7 +10,7 @@ namespace FrenziedMarmot.DependencyInjection.Test.TestTypes
 
     internal class TypedImplClass : ITypedFactoryTarget { }
 
-    internal class TypedImplFactory : AbstractInjectableFactory<ITypedFactoryTarget, TypedImplClass>
+    internal class TypedImplFactory : InjectableFactory<ITypedFactoryTarget, TypedImplClass>
     {
         public override TypedImplClass Create(IServiceProvider serviceProvider)
         {
