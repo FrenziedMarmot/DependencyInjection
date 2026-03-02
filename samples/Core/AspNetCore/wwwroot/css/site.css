@@ -26,7 +26,11 @@ a { color: #0366d6; }
 /* Sticky footer styles
 -------------------------------------------------- */
 
-html { font-size: 14px; }
+html {
+    font-size: 14px;
+    min-height: 100%;
+    position: relative;
+}
 
 @media (min-width: 768px) {
     html { font-size: 16px; }
@@ -45,11 +49,6 @@ button.accept-policy {
 
 /* Sticky footer styles
 -------------------------------------------------- */
-
-html {
-    min-height: 100%;
-    position: relative;
-}
 
 body {
     /* Margin bottom by footer height */
