@@ -33,7 +33,7 @@ jobs:
     - name: Begin SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: dotnet sonarscanner begin /k:"FrenziedMarmot_DependencyInjection" /o:"frenziedmarmot" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml"
+      run: dotnet sonarscanner begin /k:"FrenziedMarmot_DependencyInjection" /o:"frenziedmarmot" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml"
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -43,7 +43,7 @@ jobs:
     - name: End SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+      run: dotnet sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
     - name: Upload the Build Artifact
       if: ${{ github.ref == 'refs/heads/main' }}
       uses: actions/upload-artifact@v4
