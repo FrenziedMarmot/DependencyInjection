@@ -33,7 +33,7 @@ jobs:
     - name: Begin SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: dotnet sonarscanner begin /k:"FrenziedMarmot_DependencyInjection" /o:"frenziedmarmot" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml"
+      run: dotnet sonarscanner begin /k:"FrenziedMarmot_DependencyInjection" /o:"frenziedmarmot" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" /d:sonar.coverage.exclusions="samples/**/*"
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
