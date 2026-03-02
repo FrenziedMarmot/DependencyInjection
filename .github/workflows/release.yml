@@ -27,8 +27,11 @@ jobs:
         with:
           dotnet-version: 6.0.x
       - name: Push with dotnet
-        run: dotnet nuget push build/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.FM_NUGET }}
-      - name: Push
-        run: dotnet nuget push build/*.nupkg --source https://nuget.pkg.github.com/FrenziedMarmot/index.json --api-key ${{ secrets.FM_GITHUB_PKG }}
+        run: dotnet nuget push build/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY
         env:
+          NUGET_API_KEY: ${{ secrets.FM_NUGET }}
+      - name: Push
+        run: dotnet nuget push build/*.nupkg --source https://nuget.pkg.github.com/FrenziedMarmot/index.json --api-key $GITHUB_PKG_API_KEY
+        env:
+          GITHUB_PKG_API_KEY: ${{ secrets.FM_GITHUB_PKG }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
